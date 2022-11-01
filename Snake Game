@@ -1,0 +1,59 @@
+from turtle import Turtle, Screen
+from turtle import time
+from Snake_Class import Snake
+from food import Food
+from scoreboard import Scoreboard
+
+screen = Screen()
+screen.setup(width=600, height=600)
+screen.bgcolor("black")
+screen.title("Snake Game")
+screen.tracer(0)
+
+snake = Snake()
+food = Food()
+score = Scoreboard()
+
+
+screen.listen()
+screen.onkey(snake.up, "Up")
+screen.onkey(snake.down, "Down")
+screen.onkey(snake.left, "Left")
+screen.onkey(snake.right, "Right")
+
+
+snake_game = True
+
+
+
+while snake_game:
+
+
+    screen.update()
+    time.sleep(0.1)
+    snake.move()
+
+
+    #Interaction with the Food Class
+    if snake.head.distance(food) < 15 :
+        snake.extend_snake()
+        score.update_score()
+        print("Nom...Nom...Nom")
+        food.food_randomiser()
+
+    #Interaction with Wall
+    if (snake.head.xcor() > 290) or (snake.head.xcor() < -290) or (snake.head.ycor() > 290) or (snake.head.ycor() < -290):
+        score.clear()
+        score.game_over()
+        snake_game = False
+
+
+    #Interaction with its own tail
+    for segments in snake.segments[1:]:
+        if (snake.head.distance(segments) < 15) :
+            score.game_over()
+            snake_game = False
+
+
+
+screen.exitonclick()
